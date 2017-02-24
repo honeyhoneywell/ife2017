@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>自定义checkbox和radio样式</title>
+	<style>
+		.form {
+			width: 500px;
+			padding: 10px 15px;
+			border: 1px solid #ccc;
+		}
+		.form-group { margin-bottom: 15px;}
+		label {
+			height: 24px;
+			line-height: 24px;
+		}
+		input[type="checkbox"],
+		input[type="radio"] {
+			height: 0;
+			margin: 0;
+		}
+		input[type="checkbox"] + label:before {
+			content: "";
+			display: inline-block;
+			width: 16px;
+			height: 16px;
+			vertical-align: middle;
+			margin-right: 5px;
+			background: url(sprite.png) no-repeat 0 -22px;
+		}
+		input[type="checkbox"]:checked + label:before {
+			background: url(sprite.png) no-repeat -35px -22px;
+		}
+		/*radio用背景控制*/
+		input[type="radio"] + label {
+			display: inline-block;
+			width: 16px;
+			height: 24px;
+			line-height: 24px;
+			background: url(sprite.png) no-repeat 0 4px;
+			margin-right: 50px;
+		}
+		input[type="radio"]:checked + label {
+			background: url(sprite.png) no-repeat -35px 4px;
+		}
+		input[type="radio"] + label[for="rd1"]:after { content: "radio1";}
+		input[type="radio"] + label[for="rd2"]:after { content: "radio2";}
+		input[type="radio"] + label[for="rd3"]:after { content: "radio3";}
+		input[type="radio"] + label:after {
+			display: inline-block;
+			vertical-align: middle;
+			line-height: 24px;
+			padding-left: 21px;
+		}
+	</style>
+</head>
+<body>
+	<form class="form">
+		<div class="form-group">
+			<input type="checkbox" name="ck1" id="ck1"><label for="ck1">checkbox1</label>
+			<input type="checkbox" name="ck1" id="ck2"><label for="ck2">checkbox2</label>
+			<input type="checkbox" name="ck1" id="ck3"><label for="ck3">checkbox3</label>
+		</div>
+		<div class="form-group">
+			<input type="radio" name="rdgroup" id="rd1" value="rd1"><label for="rd1"></label>
+			<input type="radio" name="rdgroup" id="rd2" value="rd2"><label for="rd2"></label>
+			<input type="radio" name="rdgroup" id="rd3" value="rd3"><label for="rd3"></label>
+		</div>
+	</form>
+</body>
+</html>
