@@ -4,9 +4,9 @@ function isPhoneNumber() {
 		regexp = /^1[35874]\d{9}$/;
 
 	if(regexp.test(numstring)) {
-		alert("正确的电话号码！");
+		alert("正确的手机号码！");
 	} else {
-		alert("非法的电话号码！");
+		alert("非法的手机号码！");
 	}
 }
 
