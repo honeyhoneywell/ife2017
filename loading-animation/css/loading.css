@@ -1,0 +1,104 @@
+* {
+	box-sizing: border-box;
+}
+html, body {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.center {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+}
+/*圆环*/
+.loading-border {
+	width: 200px;
+	height: 200px;
+	margin-top: -100px;
+	margin-left: -100px;
+	border-radius: 50%;
+	border: 5px solid rgb(0,84,255);
+	border-top-color: transparent;		/*使一条边颜色为透明，显示3/4圆*/
+
+	-webkit-animation: border 1s infinite linear;
+	   -moz-animation: border 1s infinite linear;
+			animation: border 1s infinite linear;
+}
+
+/*底部两个半圆，不动*/
+.circle-static-left,
+.circle-static-right {	/*矩形宽为高度一半，before伪元素是一个圆，设置overflow为hidden，显示一半圆*/
+	width: 60px;
+	height: 120px;
+	margin-top: -60px;
+	overflow: hidden;
+}
+.circle-static-left { margin-left: -60px;}
+.circle-static-left:before,
+.circle-static-right:before {
+	content: "";
+	display: block;
+	border: 60px solid;
+	border-radius: 50%;
+	position: absolute;
+}
+.circle-static-left:before { 
+	left: 0;
+	border-color: rgb(0,84,255);
+}
+.circle-static-right:before { 
+	right: 0;
+	border-color: rgb(155,188,255);
+}
+/*上部重叠的两个半圆，动*/
+.circle-left,
+.circle-right {
+	width: 60px;
+	height: 120px;
+	margin-top: -60px;
+	overflow: hidden;
+	transform-origin: 0% 50%;	/*设置旋转原点为左边中部*/
+}
+.circle-left { 
+	z-index: 10;
+	-webkit-animation: circle-left 1.2s infinite linear;
+}
+.circle-right {
+	z-index: 20;
+	-webkit-animation: circle-right 1.2s infinite linear;
+}
+.circle-left:before,
+.circle-right:before {
+	content: "";
+	display: block;
+	border: 60px solid;
+	border-radius: 50%;
+	position: absolute;
+	right: 0;
+}
+.circle-left:before { border-color: rgb(155,188,255);}
+.circle-right:before { border-color: rgb(0,84,255);}
+
+
+@-webkit-keyframes border { 100% { transform: rotate(-360deg);}}
+
+@-webkit-keyframes circle-left { 
+	0% { transform: rotate(0deg);}
+	25% { transform: rotate(-180deg);}
+	50% { transform: rotate(-180deg);}
+	75% { transform: rotate(-360deg);}
+	100% { transform: rotate(-360deg);}
+}
+
+@-webkit-keyframes circle-right { 
+	0% { transform: rotate(0deg);}
+	24.99% { transform: rotate(0deg); z-index: 20;}
+	25% { transform: rotate(0deg); z-index: 5;}
+	50% { transform: rotate(-180deg);}
+	74.99% { transform: rotate(-180deg); z-index: 5;}
+	75% { transform: rotate(-180deg); z-index: 20;}
+	100% { transform: rotate(-360deg);}
+}
