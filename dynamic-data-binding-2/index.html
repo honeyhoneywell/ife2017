@@ -7,6 +7,8 @@
 <body>
 
 <script>
+	/*
+	//javascript自定义事件
 	function Observer(data) {
 		this.data = data;
 		this.walk(data); 
@@ -88,7 +90,92 @@
 	};
 
 	app1.$watch('age', function(age) {
-		console.log(`我的年纪变了，现在已经是：${age}岁了`)
+		console.log(`我的年纪变了，现在已经是：${age}岁了`);
+	});*/
+
+	//发布-订阅模式
+	function Observer(data) {
+		this.data = data;
+		this.walk(data); 
+		this.listener = new Event();
+	}
+
+	//遍历对象本身拥有的属性
+	Observer.prototype = {
+		walk: function(obj) {
+			let val;
+			for(let key in obj) {
+				if(obj.hasOwnProperty(key)) {
+					val = obj[key];
+					//如果val是对象,继续遍历
+					if (typeof val === 'object') {
+		                new Observer(val);
+		            }
+					this.convert(key, val);
+				}
+			}
+		},
+		convert: function(key, val) {
+			var self = this;
+			Object.defineProperty(this.data, key, {
+				enumerable: true,
+        		configurable: true,
+        		get: function() {
+        			console.log("你访问了" + key);
+        			return val;
+        		},
+        		set: function(newval) {
+        			//触发事件
+        			if(!self.listener.emit(key,newval)) {
+        				console.log("你设置了"+key+"，新的值是"+newval);
+        			}
+        			if(newval === val) return;
+        			val = newval;
+        			//如果新的值是对象,继续遍历
+        			if (typeof val === 'object') {
+		                new Observer(val);
+		            }
+		            
+        		}
+			});
+		},
+		//绑定事件
+		$watch: function(eventType, handler) {
+			this.listener.on(eventType, handler);
+		}
+	}
+
+	function Event() {
+		this.events = {};
+	}
+	Event.prototype = {
+		on: function(eventType, handler) {
+			if(!this.events[eventType]) {
+				this.events[eventType] = [];
+			} 
+			this.events[eventType].push(handler);
+		},
+		emit: function(eventType, ...args) {
+			if(!this.events[eventType]) return false;
+			this.events[eventType].forEach(handler=>{
+				handler(...args);
+			});
+			return true;
+		}
+	};
+
+	let app1 = new Observer({
+		name: 'youngwind',
+		age: 25
+	});
+
+	app1.data.name = {
+		lastName: 'liang',
+		firstName: 'shaofeng'
+	};
+
+	app1.$watch('age', function(age) {
+		console.log(`我的年纪变了，现在已经是：${age}岁了`);
 	});
 </script>
 </body>
