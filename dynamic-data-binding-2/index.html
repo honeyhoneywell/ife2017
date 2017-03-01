@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>动态数据绑定2</title>
+</head>
+<body>
+
+<script>
+	function Observer(data) {
+		this.data = data;
+		this.walk(data); 
+		this.listener = new Set();
+	}
+
+	//遍历对象本身拥有的属性
+	Observer.prototype = {
+		walk: function(obj) {
+			let val;
+			for(let key in obj) {
+				if(obj.hasOwnProperty(key)) {
+					val = obj[key];
+					//如果val是对象,继续遍历
+					if (typeof val === 'object') {
+		                new Observer(val);
+		            }
+					this.convert(key, val);
+				}
+			}
+		},
+		convert: function(key, val) {
+			var self = this;
+			Object.defineProperty(this.data, key, {
+				enumerable: true,
+        		configurable: true,
+        		get: function() {
+        			console.log("你访问了" + key);
+        			return val;
+        		},
+        		set: function(newval) {
+        			//触发age事件
+		            if(self.listener.has(key)) {
+		            	self.fireEvent(key, newval);
+		            } else {
+		            	console.log("你设置了"+key+"，新的值是"+newval);
+		            }
+        			if(newval === val) return;
+        			val = newval;
+        			//如果新的值是对象,继续遍历
+        			if (typeof val === 'object') {
+		                new Observer(val);
+		            }
+		            
+        		}
+			});
+		},
+		//触发事件
+		fireEvent: function(type, val) {
+			let evt = document.createEvent('Event');
+        	evt.initEvent(type,true,true);
+        	evt.setvalue = val;
+        	document.dispatchEvent(evt);
+		},
+		//绑定事件
+		$watch: function(eventType, handler) {
+			this.listener.add(eventType);
+
+			if(window.addEventListener) { // 标准浏览器下
+	        	document.addEventListener(eventType, function(e) {
+					handler.call(this,e.setvalue);
+				});
+	        }  else if(window.attachEvent) {
+		        document.attachEvent("on" + type, function(e) {
+		            handler.call(this,e.setvalue);
+		        });
+		    } 
+		}
+	}
+
+	let app1 = new Observer({
+		name: 'youngwind',
+		age: 25
+	});
+
+	app1.data.name = {
+		lastName: 'liang',
+		firstName: 'shaofeng'
+	};
+
+	app1.$watch('age', function(age) {
+		console.log(`我的年纪变了，现在已经是：${age}岁了`)
+	});
+</script>
+</body>
+</html>
