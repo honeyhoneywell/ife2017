@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>CSS3饼状loading效果</title>
+	<link rel="stylesheet" type="text/css" href="css/carousel3d.css">
+</head>
+<body>
+	<div class="container">
+		<div class="stage">
+			<img src="images/timg.jpg">
+			<img src="images/timg.jpg">
+			<img src="images/timg.jpg">
+			<img src="images/timg.jpg">
+			<img src="images/timg.jpg">
+			<img src="images/timg.jpg">
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		var carousel = function() {
+			var stage = document.querySelector(".stage"),
+				imgList = document.querySelectorAll(".stage img"),
+				listLen = imgList.length,
+				angle = 360/listLen,
+				tsX = 200/Math.tan(angle/2/180*Math.PI)+300,
+				sum = 0;
+			
+			//为每张图片添加旋转效果
+			imgList.forEach(function(item,index){
+				item.style.transform = 'rotateY('+angle*index+'deg ) translateZ('+tsX+'px)';
+			});
+
+			//点击图片区域旋转
+			stage.addEventListener('click', function(){
+				this.style.transform = 'rotateY('+(-1*angle*++sum)+'deg )';
+			});
+		};
+		carousel();
+	</script>
+</body>
+</html>
