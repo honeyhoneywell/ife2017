@@ -1,0 +1,66 @@
+* {
+	box-sizing: border-box;
+}
+html, body {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	background-color: #ddd;
+	overflow: auto;
+}
+
+.tree-container {
+	width: 500px;
+	min-height: 600px;
+	padding: 30px;
+	margin: 50px auto;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	background-color: #f8f8f8;
+	box-shadow: inset 0 1px 5px #ccc, 1px 1px 1px #eee;
+}
+ul.node {
+	margin: 0;
+	padding-left: 0;
+	list-style: none;
+	height: 0;
+	overflow: hidden;
+}
+ul.node.open {
+	height: auto;
+}
+.tree-container>.node {
+	height: auto;
+	overflow: visible;
+}
+
+ul>li {
+	padding-left: 14px;
+	position: relative;
+}
+
+.tree {
+	font-size: 14px;
+	line-height: 26px;
+	height: 26px;
+	padding-left: 15px;
+	cursor: pointer;
+}
+/*文件夹图片，.tree为文件，.tree.pa为折叠文件夹，.tree.pa.open为打开文件夹*/
+.tree:after {
+	content: "";
+	display: block;
+	width: 24px;
+	height: 22px;
+	background: url(../images/file_sprite.png) no-repeat 1px -27px;
+	position: absolute;
+	top: 2px;
+	left: 0;
+}
+.tree.pa:after {
+	background-position: 1px 1px;
+}
+.tree.pa.open:after {
+	background-position: -30px 1px;
+}
