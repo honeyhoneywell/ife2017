@@ -13,11 +13,14 @@
 		label {
 			height: 24px;
 			line-height: 24px;
+			margin-right: 15px;
 		}
 		input[type="checkbox"],
 		input[type="radio"] {
 			height: 0;
 			margin: 0;
+			position: absolute;
+			left: -999px;
 		}
 		input[type="checkbox"] + label:before {
 			content: "";
@@ -38,7 +41,7 @@
 			height: 24px;
 			line-height: 24px;
 			background: url(sprite.png) no-repeat 0 4px;
-			margin-right: 50px;
+			margin-right: 65px;
 		}
 		input[type="radio"]:checked + label {
 			background: url(sprite.png) no-repeat -35px 4px;
