@@ -127,23 +127,23 @@ drawMap.prototype = {
 	},
 	setText: function(ctx, text, x, y, color, style) {
 		ctx.font = style;
-    	ctx.fillStyle = color;
+		ctx.fillStyle = color;
 		ctx.fillText(text, x, y);
 	},
 	roundRect: function(ctx, x, y, w, h, r, color) {	//画圆角矩形
 		var min_size = Math.min(w, h);
 	    if (r > min_size / 2) r = min_size / 2;
 	    // 开始绘制
-	    ctx.beginPath();
-	    ctx.moveTo(x + r, y);
-	    ctx.arcTo(x + w, y, x + w, y + h, r);
-	    ctx.arcTo(x + w, y + h, x, y + h, r);
-	    ctx.arcTo(x, y + h, x, y, r);
-	    ctx.arcTo(x, y, x + w, y, r);
-	    ctx.closePath();
+		ctx.beginPath();
+		ctx.moveTo(x + r, y);
+		ctx.arcTo(x + w, y, x + w, y + h, r);
+		ctx.arcTo(x + w, y + h, x, y + h, r);
+		ctx.arcTo(x, y + h, x, y, r);
+		ctx.arcTo(x, y, x + w, y, r);
+		ctx.closePath();
 
 		ctx.strokeStyle = color;
-    	ctx.stroke();
+		ctx.stroke();
 	}
 };
 
