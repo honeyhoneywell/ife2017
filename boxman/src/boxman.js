@@ -96,6 +96,9 @@ drawMap.prototype = {
 		this.setText(ctx, this.mapSet.name, 50, 50, "#fff", "30px Microsoft Yahei bold");
 		//选择关卡
 		this.setText(ctx, "选择关卡：", 620, 36, "#fff", "18px Microsoft Yahei");
+		//撤消按钮
+		this.roundRect(ctx, 240, 20, 120, 40, 5, "#fff");
+		this.setText(ctx, "撤消", 280, 46, "#fff", "20px Microsoft Yahei bold");
 		//重试按钮
 		this.roundRect(ctx, 440, 20, 120, 40, 5, "#fff");
 		this.setText(ctx, "重试", 480, 46, "#fff", "20px Microsoft Yahei bold");
@@ -103,7 +106,7 @@ drawMap.prototype = {
 	drawMap: function(data) {
 		//在中层画布画地图
 		var ctx = this.contextMAP, map = this.mapSet, self = this;
-		//只清除这张地图大小的范围
+		//清除这张地图和步数
 		ctx.clearRect(map.beginX,map.beginY,map.cwidth,map.cheight);
 		//画出初始地图
 		data.forEach(function(row, i){
@@ -114,7 +117,7 @@ drawMap.prototype = {
 			});
 		});
 	},
-	drawStep: function(data) {	//画每次改动的方块
+	drawStep: function(data, steps) {	//画每次改动的方块及步数
 		var self = this;
 		data.forEach(function(item){
 			self.drawImageCube(item.val, item.x, item.y);
@@ -179,7 +182,7 @@ var manMove = function(data) {
 		self.keyControl(e);
 	});
 	document.querySelector("#topcanvas").addEventListener('click', function(e){
-		self.retry(e);
+		self.clickEvent(e);
 	});
 };
 manMove.prototype = {
@@ -240,45 +243,51 @@ manMove.prototype = {
 	},
 	keyControl: function(event) {
 		switch(event.keyCode) {
-			case 37: 
+			case 37:    //左
 				this.setPonintVal(0, -1, 0, -2);
 				break;
-			case 38:
+			case 38:    //上
 				this.setPonintVal(-1, 0, -2, 0);
 				break;
-			case 39: 
+			case 39:    //右
 				this.setPonintVal(0, 1, 0, 2);
 				break;
-			case 40:
+			case 40:    //下
 				this.setPonintVal(1, 0, 2, 0);
 				break;
 		}
 		this.move();
 	},
 	//保存点信息
-	savePoint: function(x,y,num) {
-		var point = {
-			x: x,
-			y: y,
-			val: num
+	savePointInfo: function(len) {
+		var arr = [];
+		for(var i=1; i<=len; i++) {
+			var nobj = new Object();
+			nobj.x = this.point['p'+i].x;
+			nobj.y = this.point['p'+i].y;
+			nobj.val = this.copy[nobj.x][nobj.y];
+			arr.push(nobj);
 		}
-		return point;
+		return arr;
 	},
 	move: function() {
 		var p1 = this.point.p1,
 			p2 = this.point.p2,
 			p3 = this.point.p3,
-			step = [];
-		//每次移动最多3个点，保存每次移动端点为一步
+			step = {
+				before: '',
+				after: ''
+			};
+		//每次移动最多3个点，保存每次移动前和移动后端状态
 
 		//前方一格如果是墙
 		if(this.copy[p2.x][p2.y] === this.type.wall) return;
 		//前方一格如果没有阻碍(地面或目标点)
 		if(this.copy[p2.x][p2.y] === this.type.ground || this.copy[p2.x][p2.y] === this.type.target) {
+			step.before = this.savePointInfo(2);
 			this.copy[p2.x][p2.y] += this.type.man;
 			this.copy[p1.x][p1.y] -= this.type.man;
-			step.push(this.savePoint(p1.x, p1.y, this.copy[p1.x][p1.y]));
-			step.push(this.savePoint(p2.x, p2.y, this.copy[p2.x][p2.y]));
+			step.after = this.savePointInfo(2);
 			p1.x = p2.x;
 			p1.y = p2.y;
 		}
@@ -286,18 +295,17 @@ manMove.prototype = {
 		if(this.copy[p2.x][p2.y] === this.type.bground || this.copy[p2.x][p2.y] === this.type.btarget) {
 			//前方第二格如果是箱子或墙则不动
 			if(this.copy[p3.x][p3.y] === this.type.wall || this.copy[p3.x][p3.y] === this.type.bground || this.copy[p3.x][p3.y] === this.type.btarget) return;
+			step.before = this.savePointInfo(3);
 			this.copy[p3.x][p3.y] += this.type.box;
 			this.copy[p2.x][p2.y] -= (this.type.box - this.type.man);
 			this.copy[p1.x][p1.y] -= this.type.man;
-			step.push(this.savePoint(p1.x, p1.y, this.copy[p1.x][p1.y]));
-			step.push(this.savePoint(p2.x, p2.y, this.copy[p2.x][p2.y]));
-			step.push(this.savePoint(p3.x, p3.y, this.copy[p3.x][p3.y]));
+			step.after = this.savePointInfo(3);
 			p1.x = p2.x;
 			p1.y = p2.y;
 		}
 		this.steps.push(step);
 		//重绘更新的格子
-		this.drawmap.drawStep(step);
+		this.drawmap.drawStep(step.after);
 		//判断是否胜利
 		this.isWin();
 	},
@@ -324,13 +332,33 @@ manMove.prototype = {
 			}
 		}, 200);
 	},
-	//重试
-	retry: function(event) {
+	//点击事件
+	clickEvent: function(event) {
 		var x = event.offsetX,
 			y = event.offsetY;
 
+		//重试
 		if(x>440 && x<560 && y>20 && y<60) {
 			this.search(this.level);
 		}
+		//撤消
+		if(x>240 && x<360 && y>20 && y<60) {
+			this.cancelMove();
+		}
+	},
+	//撤消
+	cancelMove: function() {
+		var slen = this.steps.length, self = this;
+
+		if(slen === 0) return;
+		var step = this.steps.pop();
+		//还原this.copy数组
+		step.before.forEach(function(item){
+			self.copy[item.x][item.y] = item.val;
+		});
+		this.point.p1.x = step.before[0].x;
+		this.point.p1.y = step.before[0].y;
+		//还原画布
+		this.drawmap.drawStep(step.before);
 	}
 };
