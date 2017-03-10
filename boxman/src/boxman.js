@@ -31,7 +31,7 @@ loadImages(source, function(){
 	var start = new manMove(gameData);
 });
 
-var drawMap = function(selector) {
+var drawMap = function() {
 	//默认值
 	this.default = {
 		cwidth: 800,
@@ -43,6 +43,8 @@ var drawMap = function(selector) {
 		beginX: 0,
 		beginY: 0,
 		swidth: 20,
+		cwidth: 0,
+		cheight: 0,
 		col: 40,
 		row: 30
 	};
@@ -57,34 +59,42 @@ var drawMap = function(selector) {
 		90: "tbox"
 	};
 
-	this.canvas = document.querySelector(selector);
-	this.canvas.width = this.default.cwidth;
-	this.canvas.height = this.default.cheight;
-	this.context = this.canvas.getContext("2d");
+	this.contextBG = this.getCanvas("#bgcanvas");
+	this.contextMAP = this.getCanvas("#mapcanvas");
+	this.contextTop = this.getCanvas("#topcanvas");
 };
 drawMap.prototype = {
-	init: function() {
-		var ctx = this.context;
-		//清空
-		ctx.clearRect(0,0,this.default.cwidth,this.default.cheight);
-		//背景
-		ctx.fillStyle= '#333';
-		ctx.fillRect(0,0,this.default.cwidth,this.default.cheight);
+	getCanvas: function(name) {
+		var canvas = document.querySelector(name);
+		canvas.width = this.default.cwidth;
+		canvas.height = this.default.cheight;
+		return canvas.getContext("2d");
 	},
 	initMap: function(data) {	//初始化地图
-		this.mapSet.name = data.name;
-		this.mapSet.beginX = Math.ceil((this.mapSet.col-data.size.width)/2)*this.mapSet.swidth;
-		this.mapSet.beginY = Math.ceil((this.mapSet.row-data.size.height)/2)*this.mapSet.swidth;
-		//console.log(this.mapSet);
-		this.draw(data.map);
+		var map = this.mapSet;
+		//清除上一次的地图
+		this.contextMAP.clearRect(map.beginX, map.beginY, map.cwidth, map.cheight);
+
+		map.name = data.name;
+		map.beginX = Math.ceil((map.col-data.size.width)/2)*map.swidth;
+		map.beginY = Math.ceil((map.row-data.size.height)/2)*map.swidth;
+		map.cwidth = data.size.width*map.swidth;
+		map.cheight = data.size.width*map.swidth;
+		//关卡名称，重试按钮，选择等
+		this.drawBG();
+		//画地图
+		this.drawMap(data.map);
 	},
-	draw: function(data) {
-		this.init();
-		var ctx = this.context, map = this.mapSet, self = this, count = 0;
+	drawBG: function() {
+		var ctx = this.contextBG;
+		ctx.clearRect(0,0,this.default.cwidth,60);
+		ctx.fillStyle= '#333';
+		ctx.fillRect(0,0,this.default.cwidth,this.default.cheight);
+
 		//关卡名称
 		ctx.font = "30px Microsoft Yahei bold";
 		ctx.fillStyle = "white";
-		ctx.fillText(map.name, 50, 50);
+		ctx.fillText(this.mapSet.name, 50, 50);
 		//选择关卡
 		ctx.font = "18px Microsoft Yahei";
 		ctx.fillText("选择关卡：", 620, 36);
@@ -95,7 +105,13 @@ drawMap.prototype = {
     	ctx.font = "20px Microsoft Yahei bold";
     	ctx.fillStyle = "#fff";
 		ctx.fillText("重试", 380, 46);
-
+	},
+	drawMap: function(data) {
+		//在中层画布画地图
+		var ctx = this.contextMAP, map = this.mapSet, self = this, count = 0;
+		//只清除这张地图大小的范围
+		ctx.clearRect(map.beginX,map.beginY,map.cwidth,map.cheight);
+		
 		data.forEach(function(row, i){
 			row.forEach(function(item, j){
 				if(item) {
@@ -147,14 +163,14 @@ var manMove = function(data) {
 	this.level = 0,
 	this.win = false;
 
-	this.drawmap = new drawMap("#boxCanvas");
+	this.drawmap = new drawMap();
 	this.addSelector();
 	this.search(0);
 
 	document.addEventListener('keyup', function(e){
 		self.keyControl(e, self);
 	});
-	document.querySelector("#boxCanvas").addEventListener('click', function(e){
+	document.querySelector("#topcanvas").addEventListener('click', function(e){
 		self.retry(e, self);
 	});
 };
@@ -174,8 +190,11 @@ manMove.prototype = {
 			e.preventDefault();
 			self.search(this.selectedIndex);
 		};
-		//使select键盘操作失效
-		select.onkeydown = function(e) { return false;};
+		//使select键盘操作失效(火狐无效)
+		select.onkeydown = function(ev) {
+			if(!document.all) this.blur(); // firefox
+			return false;
+		};
 		container.appendChild(select);
 	},
 	setSelector: function(n) {
@@ -186,7 +205,6 @@ manMove.prototype = {
 			} else {
 				op.removeAttribute('selected');
 			}
-			
 		});
 	},
 	search: function(num) {
@@ -243,7 +261,7 @@ manMove.prototype = {
 	move: function() {
 		var p1 = this.point.p1,
 			p2 = this.point.p2,
-			p3 = this.point.p3;
+			p3 = this.point.p3,
 			self = this;
 		//前方一格如果是墙
 		if(this.copy[p2.x][p2.y] === this.type.wall) return;
@@ -264,7 +282,7 @@ manMove.prototype = {
 			p1.x = p2.x;
 			p1.y = p2.y;
 		}
-		if(this.drawmap.draw(this.copy) === 0) {
+		if(this.drawmap.drawMap(this.copy) === 0) {
 			this.win = true;
 			setTimeout(function(){
 				if(self.level+1 === self.dataLen) {

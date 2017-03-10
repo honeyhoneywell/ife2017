@@ -12,16 +12,17 @@ html, body {
 .container {
 	position: relative;
 	width: 800px;
-	margin: 0 auto;
+	height: 600px;
+	margin: 50px auto;
 }
 .selector {
 	position: absolute;
 	top: 20px;
 	right: 20px;
 }
-#boxCanvas {
+.container canvas {
+	position: absolute;
 	display: block;
-	margin: 100px auto 0;
 	width: 800px;
 	height: 600px;
 }
