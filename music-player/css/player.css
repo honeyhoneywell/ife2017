@@ -1,0 +1,244 @@
+* {
+	box-sizing: border-box;
+}
+html, body {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: #f8f8f8;
+}
+.app {
+	margin-top: 20%;
+}
+.controls {
+	position: relative;
+}
+.song-tit {
+	font-size: 28px;
+	line-height: 36px;
+	margin-top: 15px;
+}
+.song-tit .singer {
+	font-size: 16px;
+	margin-left: 15px;
+	color: #666;
+}
+.song-fun {
+	margin-top: 20px;
+	margin-bottom: 5px;
+	font-size: 0;
+}
+.song-fun .time {
+	color: #a1a1a1;
+	font-size: 14px;
+}
+.control-icon {
+	display: inline-block;
+	position: relative;
+}
+.song-fun .control-icon+.control-icon {
+	margin-left: 15px;
+}
+.volcontrol {
+	width: 24px;
+	height: 100px;
+	background-color: #fff;
+	position: absolute;
+	top: -6px;
+	left: 50%;
+	transform: translateX(-50%); 
+	z-index: 12;
+	padding: 25px 7px 10px;
+	border-radius: 4px;
+	box-shadow: 0 2px 10px rgba(0,0,0,.12);
+	visibility: hidden;
+}
+.volcontrol.show {
+	visibility: visible;
+}
+.volbar {
+	width: 10px;
+	height: 65px;
+	background-color: #eee;
+	border-radius: 5px;
+	position: relative;
+	overflow: hidden;
+}
+.volbarclick {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 10px;
+	height: 65px;
+	z-index: 20;
+	cursor: pointer;
+}
+.volbarin {
+	width: 10px;
+	height: 65px;
+	background-color: #e74c3c;
+	position: relative;
+	top: 0;
+}
+
+.song-progress,
+.progressin {
+	width: 100%;
+	height: 4px;
+	background-color: #ddd;
+	border-radius: 2px;
+	position: relative;
+	overflow: hidden;
+	position: relative;
+}
+.progressin {
+	left: -100%;
+	background-color: #e74c3c;
+}
+.clickbar {
+	position: absolute;
+	width: 100%;
+	height: 4px;
+	top: 0;
+	left: 0;
+	z-index: 10;
+	cursor: pointer;
+}
+
+/*播放，上一首，下一首按钮*/
+.control-buttons {
+	font-size: 0;
+	margin-top: 30px;
+}
+.control-buttons a+a {
+	margin-left: 30px;
+}
+.prev-btn, 
+.play-btn, 
+.next-btn {
+	outline: none;
+	border: 2px solid #e74c3c;
+	border-radius: 50%;
+	position: relative;
+	box-shadow: none!important;
+}
+.prev-btn, .next-btn {
+	width: 58px;
+	height: 58px;
+}
+.play-btn {
+	width: 78px;
+	height: 78px;
+}
+.play-btn:hover {
+	background-color: #e74c3c;
+}
+
+/*信息框*/
+.msgbox {
+	padding: 15px 20px;
+	background-color: rgba(0,0,0,.8);
+	font-size: 16px;
+	color: #fff;
+	border-radius: 5px;
+	position: absolute;
+	top: 45%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	opacity: 0;
+
+	-webkit-transition: opacity .5s ease;
+	   -moz-transition: opacity .5s ease;
+			transition: opacity .5s ease;
+}
+.msgbox.show {
+	opacity: 1;
+}
+
+/*图标*/
+.icons {
+	display: inline-block;
+	overflow: hidden;
+	cursor: pointer;
+	position: relative;
+	z-index: 15;
+}
+.btn .icons {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+}
+.icon-prev {
+	width: 18px;
+	height: 12px;
+	background: url(../images/sprite.png) no-repeat -25px -62px;
+}
+.icon-next {
+	width: 18px;
+	height: 12px;
+	background: url(../images/sprite.png) no-repeat 0 -62px;
+}
+.icon-pause {
+	width: 18px;
+	height: 24px;
+	background: url(../images/sprite.png) no-repeat 0 0;
+}
+.play-btn:hover .icon-pause {
+	background: url(../images/sprite.png) no-repeat 0 -30px;
+}
+.icon-play {
+	width: 21px;
+	height: 26px;
+	background: url(../images/sprite.png) no-repeat -25px 0;
+}
+.play-btn:hover .icon-play {
+	background: url(../images/sprite.png) no-repeat -25px -30px;
+}
+.icon-shuffle {
+	width: 17px;
+	height: 14px;
+	background: url(../images/sprite.png) no-repeat -55px 0;
+}
+.icon-shuffle:hover,
+.icon-shuffle.active {
+	background: url(../images/sprite.png) no-repeat -77px 0;
+}
+.icon-loop {
+	width: 14px;
+	height: 14px;
+	background: url(../images/sprite.png) no-repeat -55px -19px;
+}
+.icon-loop:hover,
+.icon-loop.active {
+	background: url(../images/sprite.png) no-repeat -77px -19px;
+}
+.icon-volume {
+	width: 14px;
+	height: 14px;
+	background: url(../images/sprite.png) no-repeat -55px -38px;
+}
+.icon-volume.active {
+	background: url(../images/sprite.png) no-repeat -77px -38px;
+}
+
+@media screen and (max-width: 767px) {
+	.app {
+		margin-top: 5%;
+	}
+	.song-pic img {
+		float: none!important;
+		margin: 0 auto;
+	}
+	.song-tit{
+		font-size: 24px;
+		line-height: 28px;
+		margin-top: 40px;
+	}
+	.song-tit .singer {
+		display: block;
+		margin-left: 0;
+	}
+}

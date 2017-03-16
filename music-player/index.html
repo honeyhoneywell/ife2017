@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>音乐播放器</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/player.css">
+</head>
+<body>
+<div class="container">
+	<audio src="http://link.hhtjim.com/163/35403523.mp3" id="audio"></audio>
+	<div class="app">
+		<div class="row">
+			<div class="col-sm-4 song-pic clearfix">
+				<img src="http://p3.music.126.net/qW4N08_Q8PSePV7iewwvHg==/3438172860758204.jpg?param=220y220" class="img-responsive img-circle pull-right">
+			</div>
+			<div class="col-sm-8 controls">
+				<div class="song-tit">
+					<span class="name"></span>
+					<span class="singer"></span>
+				</div>
+				<div class="song-fun row">
+					<div class="col-xs-6 col-sm-4">
+						<span class="time">00:00 / --:--</span>
+					</div>
+					<div class="col-xs-6 col-sm-8 text-right">
+						<!--
+						<div class="control-icon">
+							<i class="icons icon-shuffle" id="shuffBtn"></i>
+						</div>
+						-->
+						<div class="control-icon">
+							<i class="icons icon-loop" id="loopBtn"></i>
+						</div>
+						<div class="control-icon">
+							<i class="icons icon-volume" id="voluBtn"></i>
+							<div class="volcontrol">
+								<div class="volbar">
+									<div class="volbarclick"></div>
+									<div class="volbarin"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="song-progress">
+					<div class="clickbar"></div>
+					<div class="progressin"></div>
+				</div>
+				<div class="control-buttons text-center">
+					<a href="javascript:void(0)" class="btn prev-btn" id="prevBtn">
+						<i class="icons icon-prev"></i>
+					</a>
+					<a href="javascript:void(0)" class="btn play-btn" id="playBtn">
+						<i class="icons icon-play"></i>
+					</a>
+					<a href="javascript:void(0)" class="btn next-btn" id="nextBtn">
+						<i class="icons icon-next"></i>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script src="src/require.js" data-main="src/main"></script>
+</body>
+</html>
